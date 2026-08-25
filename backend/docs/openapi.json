@@ -1,0 +1,89 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "StockPulse E-Commerce Engine API",
+    "description": "Autonomous AI Inventory Signal Detection & Dynamic Pricing Engine REST Specification",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Local Development Server"
+    }
+  ],
+  "paths": {
+    "/products": {
+      "get": {
+        "summary": "List Catalog Products",
+        "parameters": [
+          { "name": "category", "in": "query", "schema": { "type": "string" } },
+          { "name": "status", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Successful products list" }
+        }
+      },
+      "post": {
+        "summary": "Create New Product SKU",
+        "responses": {
+          "201": { "description": "Product created" }
+        }
+      }
+    },
+    "/products/{id}/orders": {
+      "post": {
+        "summary": "Simulate Sale Order",
+        "description": "Decrements stock, bumps demand velocity, and fires agentic triggers asynchronously",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Order simulated and triggers evaluated" }
+        }
+      }
+    },
+    "/products/{id}/stock": {
+      "patch": {
+        "summary": "Update Product Stock Level",
+        "description": "Updates stock level and fires low-stock agentic loop if below threshold",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Stock updated" }
+        }
+      }
+    },
+    "/pricing-suggestions/{id}": {
+      "patch": {
+        "summary": "Accept or Reject Pricing Recommendation",
+        "description": "Human checkpoint: Accepting mutates live Product.currentPrice",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Suggestion status updated" }
+        }
+      }
+    },
+    "/reorder-suggestions/{id}": {
+      "patch": {
+        "summary": "Accept or Reject Reorder Recommendation",
+        "description": "Human checkpoint: Accepting simulates inbound shipment and increments stock",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Suggestion status updated" }
+        }
+      }
+    },
+    "/config/strategy": {
+      "get": { "summary": "Get Active Strategy Name ('AI' | 'RULE')" },
+      "post": { "summary": "Set Active Strategy Name ('AI' | 'RULE')" }
+    },
+    "/activity-logs": {
+      "get": { "summary": "Get Real-Time Signal Activity & Audit Log Feed" }
+    }
+  }
+}
